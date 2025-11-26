@@ -75,10 +75,12 @@ def controller(state: ArrayLike, parameters: ArrayLike, racetrack: RaceTrack) ->
     
     delta_desired = np.clip(pure_pursuit_steering(car_pos, car_heading, lookahead_pt, wheelbase, lookahead_dist), -max_steering, max_steering)
     
-    # find the max curvature ahead
     n_points = len(path)
     max_curvature = 0.0
-    for i in range(30):
+    
+    # after further testing, we need to also use the previous parts of the corner as well
+    # to ensure that we don't accelerate too early, leading to over correction when entering the straights 
+    for i in range(-10, 30):
         idx = (closest_idx + i) % n_points
         curvature = compute_curvature(path, idx)
         max_curvature = max(max_curvature, curvature)
